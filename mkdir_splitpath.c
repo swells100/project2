@@ -44,6 +44,7 @@ void mkdir(char pathName[]){
     if (parentDir->childPtr == NULL) {
         parentDir->childPtr = newDir;
     } else {
+    
         struct NODE* lastChild = parentDir->childPtr;
         while (lastChild->siblingPtr != NULL) {
             lastChild = lastChild->siblingPtr;
@@ -56,13 +57,12 @@ void mkdir(char pathName[]){
     return;
 }
 
-//handles tokenizing and absolute/relative pathing options
-struct NODE* splitPath(char* pathName, char* baseName, char* dirName){
-
+struct NODE* splitPath(char* pathName, char* baseName, char* dirName) {
+    // Handle the root path specifically
     if (strcmp(pathName, "/") == 0) {
         strcpy(dirName, "/");
         strcpy(baseName, "");
-        return root;
+        return root; // Root directory
     }
 
     char* lastSlash = strrchr(pathName, '/');
@@ -70,21 +70,22 @@ struct NODE* splitPath(char* pathName, char* baseName, char* dirName){
         size_t dirLen = lastSlash - pathName;
         strncpy(dirName, pathName, dirLen);
         dirName[dirLen] = '\0';
-
         strcpy(baseName, lastSlash + 1);
     } else {
-        strcpy(dirName, "");
-        strcpy(baseName, pathName);
+        strcpy(dirName, ""); // No directory path
+        strcpy(baseName, pathName); // The entire path is the baseName
     }
 
-    struct NODE* current = root;
-    char* token = strtok(dirName, "/");
-    
-    while (token != NULL) {
+    // Start from the root or cwd based on the path's initial character
+    struct NODE* current = (pathName[0] == '/') ? root : cwd;
 
+    // Tokenize dirName to traverse the tree
+    char* token = strtok(dirName, "/");
+    while (token != NULL) {
         struct NODE* found = NULL;
         struct NODE* child = current->childPtr;
 
+        // Search for the token in the current directory's children
         while (child != NULL) {
             if (strcmp(child->name, token) == 0) {
                 found = child;
@@ -92,17 +93,17 @@ struct NODE* splitPath(char* pathName, char* baseName, char* dirName){
             }
             child = child->siblingPtr;
         }
-    
 
-      if (found == NULL) {
-          printf("ERROR: directory %s does not exist\n", token);
-          return NULL;
-      }
+        // If the directory token does not exist, print error and return NULL
+        if (found == NULL) {
+            printf("ERROR: directory %s does not exist\n", token);
+            return NULL;
+        }
 
-      current = found;
-      token = strtok(NULL, "/");
+        current = found; // Move into the found child directory
+        token = strtok(NULL, "/"); // Move to the next token
     }
 
-
-    return current;
+    return current; // Return the current directory after traversing
 }
+
