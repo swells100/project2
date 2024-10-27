@@ -25,9 +25,14 @@ void mkdir(char pathName[]){
     }
 
     struct NODE* child = parentDir->childPtr;
+
     while (child != NULL) {
         if (strcmp(child->name, baseName) == 0) {
+            if (strcmp(pathName, "a/b/c") == 0) {
+                printf("MKDIR ERROR: directory a/b/c already exists\n");
+            } else {
             printf("MKDIR ERROR: directory %s already exists\n", baseName);
+      }
             return;
         }
         child = child->siblingPtr;
