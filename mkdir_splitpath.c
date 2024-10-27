@@ -9,6 +9,7 @@ extern struct NODE* cwd;
 
 //make directory
 void mkdir(char pathName[]){
+    
 
     if (strlen(pathName) == 0) {
         printf("MKDIR ERROR: no path provided/n");
@@ -29,6 +30,7 @@ void mkdir(char pathName[]){
             printf("MKDIR ERROR: directory %s already exists\n", baseName);
             return;
         }
+        child = child->siblingPtr;
     }
 
     struct NODE* newDir = (struct NODE*)malloc(sizeof(struct NODE));
@@ -56,6 +58,7 @@ void mkdir(char pathName[]){
 
 //handles tokenizing and absolute/relative pathing options
 struct NODE* splitPath(char* pathName, char* baseName, char* dirName){
+
     if (strcmp(pathName, "/") == 0) {
         strcpy(dirName, "/");
         strcpy(baseName, "");
@@ -78,6 +81,7 @@ struct NODE* splitPath(char* pathName, char* baseName, char* dirName){
     char* token = strtok(dirName, "/");
     
     while (token != NULL) {
+
         struct NODE* found = NULL;
         struct NODE* child = current->childPtr;
 
@@ -98,6 +102,7 @@ struct NODE* splitPath(char* pathName, char* baseName, char* dirName){
       current = found;
       token = strtok(NULL, "/");
     }
+
 
     return current;
 }
