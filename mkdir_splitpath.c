@@ -11,8 +11,8 @@ extern struct NODE* cwd;
 void mkdir(char pathName[]){
     
 
-    if (strlen(pathName) == 0) {
-        printf("MKDIR ERROR: no path provided/n");
+    if (pathName == NULL || strlen(pathName) == 0 || strcmp(pathName, "/") == 0) {
+        printf("MKDIR ERROR: no path provided\n");
         return;
     }
 
